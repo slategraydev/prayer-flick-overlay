@@ -1,29 +1,27 @@
 /*
-BSD 2-Clause License
+ * Copyright (c) 2025, slategray <https://github.com/slategraydev>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
 
-Copyright (c) 2025, slategray
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 */
 
 package com.prayerflicker;
@@ -44,7 +42,7 @@ public interface PrayerFlickOverlayConfig extends Config
     enum DisplayOrientation { HORIZONTAL, VERTICAL }
     enum MovementStyle { SINE, LINEAR, EASE_IN_OUT, EASE_OUT_IN, PING_PONG }
     enum IconPosition { LEFT, MIDDLE, RIGHT, OFF }
-    enum ColorMode { SINGLE, ACTIVE }
+    enum PrayerMode { QUICKPRAYER, STATUSBAR }
 
     @ConfigSection(
             name = "Settings",
@@ -80,6 +78,15 @@ public interface PrayerFlickOverlayConfig extends Config
 
     @ConfigItem(
             position = 2,
+            keyName = "prayerMode",
+            name = "Prayer Mode",
+            description = "Switches between Quick-Prayer based or general active prayer status.",
+            section = settingsSection
+    )
+    default PrayerMode prayerMode() { return PrayerMode.QUICKPRAYER; }
+
+    @ConfigItem(
+            position = 3,
             keyName = "reverseDirection",
             name = "Reverse Direction",
             description = "Reverses the direction of the tick bar.",
@@ -88,16 +95,16 @@ public interface PrayerFlickOverlayConfig extends Config
     default boolean reverseDirection() { return false; }
 
     @ConfigItem(
-            position = 3,
+            position = 4,
             keyName = "prayerIcon",
             name = "Prayer Icon",
-            description = "Position of the prayer skill icon on the bar.",
+            description = "Position of the prayer icon on the bar.",
             section = settingsSection
     )
     default IconPosition prayerIcon() { return IconPosition.LEFT; }
 
     @ConfigItem(
-            position = 4,
+            position = 5,
             keyName = "fadeAfterCombat",
             name = "Fade After Combat",
             description = "Fade the overlay out when out of combat.",
@@ -113,7 +120,7 @@ public interface PrayerFlickOverlayConfig extends Config
             description = "Color of the moving tick bar.",
             section = stylingSection
     )
-    default Color tickBarColor() { return new Color(200, 200, 200, 200); }
+    default Color tickBarColor() { return new Color(215, 215, 215, 200); }
 
     @ConfigItem(
             position = 1,
@@ -124,24 +131,15 @@ public interface PrayerFlickOverlayConfig extends Config
     )
     default int tickBarThickness() { return 15; }
 
-    @ConfigItem(
-            position = 2,
-            keyName = "colorMode",
-            name = "Bar Color Mode",
-            description = "Choose between a single static color or active/inactive colors.",
-            section = stylingSection
-    )
-    default ColorMode colorMode() { return ColorMode.SINGLE; }
-
     @Alpha
     @ConfigItem(
-            position = 3,
-            keyName = "singleColor",
-            name = "Single Bar Color",
-            description = "Color of the bar when in single color mode.",
+            position = 2,
+            keyName = "quickPrayerModeColor",
+            name = "Quick Prayer Color",
+            description = "Color of the bar when in Quick Prayer mode.",
             section = stylingSection
     )
-    default Color singleColor() { return new Color(60, 15, 100, 200); }
+    default Color quickPrayerModeColor() { return new Color(60, 15, 100, 200); }
 
     @Alpha
     @ConfigItem(
@@ -179,7 +177,7 @@ public interface PrayerFlickOverlayConfig extends Config
             description = "Height of the prayer bar.",
             section = stylingSection
     )
-    default int barHeight() { return 20; }
+    default int barHeight() { return 19; } // 20 makes the sprite look weird
 
     @Range(max = 5)
     @ConfigItem(
