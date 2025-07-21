@@ -104,6 +104,7 @@ public class PrayerFlickOverlayPlugin extends Plugin
 		spriteManager.getSpriteAsync(1068, 0, icon -> prayerIcon = icon);
 		spriteManager.getSpriteAsync(1058, 0, icon -> prayerIconActive = icon);
 		lastCombatTime = Instant.now();
+		overlay.resetBounds();
 	}
 
 	@Override
